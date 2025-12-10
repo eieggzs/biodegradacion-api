@@ -1,4 +1,4 @@
-const URL_API = "https://biodegradacion-api.onrender.com/predict";
+const URL_API = "https://biodegradacion-api.onrender.com";
 
 // Variables globales reales
 let tempActual = 20;
