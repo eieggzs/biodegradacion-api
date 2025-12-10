@@ -28,3 +28,4 @@ def predict(data: InputData):
     ]]
     pred = model.predict(entrada)[0]
     return {"nivel_degradacion": float(pred)}
+
