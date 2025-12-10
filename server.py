@@ -2,9 +2,20 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 
-model = joblib.load("modelo_biodegradacion.pkl")
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 app = FastAPI()
+
+# Servir carpeta ADD
+app.mount("/ADD", StaticFiles(directory="ADD"), name="ADD")
+
+# Servir index.html cuando se visite "/"
+@app.get("/")
+def home():
+    return FileResponse("ADD/index.html")
+
+model = joblib.load("modelo_biodegradacion.pkl")
 
 class InputData(BaseModel):
     Temperatura: float

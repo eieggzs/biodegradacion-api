@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodegradación IoT</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <div class="title-bar text-center">
+        <h1>Panel de análisis de datos</h1>
+        <h5>Monitoreo de la Biodegradación de biopolímeros</h5>
+    </div>
+
+    <div class="container">
+
+        <!-- Sensores en tiempo real -->
+        <div class="section-title">Información de los sensores en Tiempo Real</div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="sensor-card">
+                    <h4>Temperatura</h4>
+                    <p id="temp_val">...</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="sensor-card">
+                    <h4>Humedad</h4>
+                    <p id="hum_val">...</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="sensor-card">
+                    <h4>Metano</h4>
+                    <p id="metano_val">...</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="sensor-card">
+                    <h4>Peso</h4>
+                    <p id="peso_val">...</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="sensor-card">
+                    <h4>Distancia</h4>
+                    <p id="dist_val">...</p>
+                </div>
+            </div>
+
+            <div class="sensor-card">
+                <h4>Nivel de degradación</h4>
+                <p id="degradacion_val">...</p>
+            </div>
+        </div>
+
+        <!-- Gráficas -->
+        <div class="section-title">Gráficas</div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="graf_temp"></canvas>
+            </div>
+
+            <div class="col-md-6">
+                <canvas id="graf_hum"></canvas>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <canvas id="graf_peso"></canvas>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <canvas id="graf_metano"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="/ADD/libs/bootstrap.min.js"></script>
+    <script src="/ADD/libs/chart.min.js"></script>
+    <script src="/ADD/app.js"></script>
+
+</body>
+</html>
