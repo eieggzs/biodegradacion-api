@@ -1,23 +1,29 @@
-const URL_API = "https://biodegradacion-api.com/predict";
+const URL_API = "https://biodegradacion-api.onrender.com/predict";
 
 // Variables globales reales
-let tempActual = 0;
-let humActual = 0;
-let metanoActual = 0;
-let pesoActual = 0;
+let tempActual = 20;
+let humActual = 50;
+let metanoActual = 200;
+let pesoActual = 30;
 let distActual = 0;
 let degradacionActual = 0;
 
 async function obtenerDatosReales() {
     try {
-        const r = await fetch(URL_API);
+        const r = await fetch(URL_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                Temperatura: tempActual,
+                Humedad: humActual,
+                Metano: metanoActual,
+                Peso: pesoActual,
+                Distancia: distActual
+            })
+        });
+
         const data = await r.json();
 
-        tempActual = data.temperatura;
-        humActual = data.humedad;
-        metanoActual = data.metano;
-        pesoActual = data.peso;
-        distActual = data.movimiento;
         degradacionActual = data.nivel_degradacion;
 
         actualizarCards();
@@ -25,6 +31,7 @@ async function obtenerDatosReales() {
         console.error("Error al obtener datos reales:", e);
     }
 }
+
 
 function actualizarCards() {
     document.getElementById("temp_val").textContent = tempActual.toFixed(2) + " °C";

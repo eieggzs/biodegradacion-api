@@ -24,10 +24,6 @@ class InputData(BaseModel):
     Peso: float
     Distancia: float
 
-@app.get("/")
-def root():
-    return {"status": "API funcionando correctamente"}
-
 @app.post("/predict")
 def predict(data: InputData):
     entrada = [[
