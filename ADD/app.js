@@ -4,7 +4,7 @@ const API_BASE = "https://biodegradacion-api.onrender.com";
 // Actualización cada 20 segundos
 const INTERVALO_MS = 20000;
 
-// Variables que se llenarán con datos reales
+// Variables globales
 let tempActual = 0;
 let humActual = 0;
 let metanoActual = 0;
@@ -34,16 +34,23 @@ async function obtenerPrediccion() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                // ⚠ Deben coincidir EXACTAMENTE con el modelo del backend
                 Temperatura: tempActual,
                 Humedad: humActual,
                 Metano: metanoActual,
                 Peso: pesoActual,
-                Movimiento: distActual
+                Distancia: distActual
             })
         });
 
         const data = await res.json();
-        degradacionActual = data.nivel_degradacion;
+
+        if (data.nivel_degradacion !== undefined) {
+            degradacionActual = data.nivel_degradacion;
+        } else {
+            console.warn("Predicción inválida:", data);
+        }
+
     } catch (e) {
         console.error("Error obteniendo predicción:", e);
     }
@@ -53,10 +60,10 @@ async function obtenerPrediccion() {
 // 3. Actualizar tarjetas
 // ------------------------------
 function actualizarCards() {
-    document.getElementById("temp_val").textContent = tempActual.toFixed(2);
-    document.getElementById("hum_val").textContent = humActual.toFixed(2);
-    document.getElementById("metano_val").textContent = metanoActual.toFixed(2);
-    document.getElementById("peso_val").textContent = pesoActual.toFixed(2);
+    document.getElementById("temp_val").textContent = tempActual.toFixed(2) + " °C";
+    document.getElementById("hum_val").textContent = humActual.toFixed(2) + " %";
+    document.getElementById("metano_val").textContent = metanoActual.toFixed(2) + " ppm";
+    document.getElementById("peso_val").textContent = pesoActual.toFixed(2) + " g";
     document.getElementById("dist_val").textContent = distActual ? "Detectado" : "No detectado";
     document.getElementById("degradacion_val").textContent = degradacionActual.toFixed(2) + " %";
 }
@@ -74,6 +81,7 @@ function crearGrafica(ctx, label) {
             datasets: [{
                 label: label,
                 data: [],
+                borderColor: "rgba(0,0,0,0.7)",
                 borderWidth: 2
             }]
         },
@@ -95,10 +103,12 @@ function actualizarGraficas() {
     function push(chart, valor) {
         chart.data.labels.push(hora);
         chart.data.datasets[0].data.push(valor);
+
         if (chart.data.labels.length > maxPuntos) {
             chart.data.labels.shift();
             chart.data.datasets[0].data.shift();
         }
+
         chart.update();
     }
 
@@ -113,8 +123,9 @@ function actualizarGraficas() {
 // ------------------------------
 async function actualizar() {
     const sensores = await obtenerSensores();
+
     if (!sensores) {
-        console.warn("Sensores no disponibles");
+        console.warn("Sensores no disponibles, usando últimos valores");
     } else {
         tempActual = sensores.temperatura ?? tempActual;
         humActual = sensores.humedad ?? humActual;
