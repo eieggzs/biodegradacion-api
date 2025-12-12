@@ -65,7 +65,7 @@ function actualizarCards() {
     document.getElementById("metano_val").textContent = metanoActual.toFixed(2) + " ppm";
     document.getElementById("peso_val").textContent = pesoActual.toFixed(2) + " g";
     document.getElementById("dist_val").textContent = distActual ? "Detectado" : "No detectado";
-    document.getElementById("degradacion_val").textContent = degradacionActual.toFixed(2) + " %";
+    document.getElementById("degradacion_val").textContent = degradacionActual.toFixed(4) + " %";
 }
 
 // ------------------------------
