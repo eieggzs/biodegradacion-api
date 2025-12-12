@@ -26,6 +26,10 @@ class InputData(BaseModel):
     Peso: float
     Distancia: float
 
+    class Config:
+        alias_generator = str.lower   # convierte Temperatura → temperatura
+        allow_population_by_field_name = True
+
 @app.post("/predict")
 def predict(data: InputData):
 
