@@ -113,13 +113,15 @@ function actualizarGraficas() {
 // ------------------------------
 async function actualizar() {
     const sensores = await obtenerSensores();
-    if (!sensores) return;
-
-    tempActual = sensores.temperatura ?? 0;
-    humActual = sensores.humedad ?? 0;
-    metanoActual = sensores.metano ?? 0;
-    pesoActual = sensores.peso ?? 0;
-    distActual = sensores.movimiento ?? 0;
+    if (!sensores) {
+        console.warn("Sensores no disponibles");
+    } else {
+        tempActual = sensores.temperatura ?? tempActual;
+        humActual = sensores.humedad ?? humActual;
+        metanoActual = sensores.metano ?? metanoActual;
+        pesoActual = sensores.peso ?? pesoActual;
+        distActual = sensores.movimiento ?? distActual;
+    }
 
     await obtenerPrediccion();
 
