@@ -2,9 +2,9 @@ const URL_API = "https://biodegradacion-api.onrender.com/predict";
 
 // Valores iniciales (los reales vendrán de Adafruit en el futuro)
 let tempActual = 20;
-let humActual = 50;
-let metanoActual = 200;
-let pesoActual = 30;
+let humActual = 95;
+let metanoActual = 700;
+let pesoActual = 14;
 let distActual = 0;
 
 // Esto debes calcularlo: horas transcurridas desde inicio del experimento.

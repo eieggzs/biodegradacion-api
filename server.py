@@ -28,13 +28,14 @@ class InputData(BaseModel):
 def predict(data: InputData):
 
     entrada = [[
-        data.Temperatura,
-        data.Humedad,
-        data.Metano,
-        data.Peso,
-        data.Distancia
+        data.temperatura,
+        data.humedad,
+        data.metano,
+        data.peso,
+        data.movimiento
     ]]
 
     pred = model.predict(entrada)[0]
 
     return {"nivel_degradacion": float(pred)}
+
