@@ -127,11 +127,11 @@ async function actualizar() {
     if (!sensores) {
         console.warn("Sensores no disponibles, usando últimos valores");
     } else {
-        tempActual = sensores.temperatura ?? tempActual;
-        humActual = sensores.humedad ?? humActual;
-        metanoActual = sensores.metano ?? metanoActual;
-        pesoActual = sensores.peso ?? pesoActual;
-        distActual = sensores.movimiento ?? distActual;
+        tempActual = sensores.Temperatura ?? tempActual;
+        humActual = sensores.Humedad ?? humActual;
+        metanoActual = sensores.Metano ?? metanoActual;
+        pesoActual = sensores.Peso ?? pesoActual;
+        distActual = sensores.Movimiento ?? distActual;
     }
 
     await obtenerPrediccion();
