@@ -1,148 +1,134 @@
-const URL_API = "https://biodegradacion-api.onrender.com/predict";
+// URL de la API en Render
+const API_BASE = "https://biodegradacion-api.onrender.com";
 
-// Valores iniciales (placeholder)
-let tempActual = 20;
-let humActual = 95;
-let metanoActual = 700;
-let pesoActual = 14;
+// Actualización cada 20 segundos
+const INTERVALO_MS = 20000;
+
+// Variables que se llenarán con datos reales
+let tempActual = 0;
+let humActual = 0;
+let metanoActual = 0;
+let pesoActual = 0;
 let distActual = 0;
-
 let degradacionActual = 0;
 
-// --- ACTUALIZAR TARJETAS ---
-function actualizarCards() {
-    document.getElementById("temp_val").textContent = tempActual.toFixed(2) + " °C";
-    document.getElementById("hum_val").textContent = humActual.toFixed(1) + " %";
-    document.getElementById("metano_val").textContent = metanoActual.toFixed(1) + " ppm";
-    document.getElementById("peso_val").textContent = pesoActual.toFixed(1) + " g";
-    document.getElementById("dist_val").textContent = distActual ? "Detectado" : "No detectado";
-
-    document.getElementById("degradacion_val").textContent =
-        degradacionActual.toFixed(2) + " %";
+// ------------------------------
+// 1. Obtener datos desde el backend (Adafruit)
+// ------------------------------
+async function obtenerSensores() {
+    try {
+        const res = await fetch(`${API_BASE}/adafruit`);
+        return await res.json();
+    } catch (e) {
+        console.error("Error obteniendo sensores:", e);
+        return null;
+    }
 }
 
-// --- PETICIÓN AL MODELO ---
-async function obtenerDatosReales() {
+// ------------------------------
+// 2. Obtener predicción con ML
+// ------------------------------
+async function obtenerPrediccion() {
     try {
-        const r = await fetch(URL_API, {
+        const res = await fetch(`${API_BASE}/predict`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                Temperatura: tempActual,
-                Humedad: humActual,
-                Metano: metanoActual,
-                Peso: pesoActual,
-                Distancia: distActual
+                temperatura: tempActual,
+                humedad: humActual,
+                metano: metanoActual,
+                peso: pesoActual,
+                movimiento: distActual
             })
         });
 
-        const data = await r.json();
+        const data = await res.json();
         degradacionActual = data.nivel_degradacion;
-
-        actualizarCards();
     } catch (e) {
-        console.error("Error al obtener predicción:", e);
+        console.error("Error obteniendo predicción:", e);
     }
 }
 
-// --- GRÁFICAS ---
+// ------------------------------
+// 3. Actualizar tarjetas
+// ------------------------------
+function actualizarCards() {
+    document.getElementById("temp_val").textContent = tempActual.toFixed(2);
+    document.getElementById("hum_val").textContent = humActual.toFixed(2);
+    document.getElementById("metano_val").textContent = metanoActual.toFixed(2);
+    document.getElementById("peso_val").textContent = pesoActual.toFixed(2);
+    document.getElementById("dist_val").textContent = distActual ? "Detectado" : "No detectado";
+    document.getElementById("degradacion_val").textContent = degradacionActual.toFixed(2) + " %";
+}
+
+// ------------------------------
+// 4. Gráficas
+// ------------------------------
 const maxPuntos = 20;
 
-let graficaTemp = new Chart(document.getElementById("graf_temp"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Temperatura (°C)",
-            data: [],
-            borderColor: "rgba(50, 100, 200, 1)",
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
+function crearGrafica(ctx, label) {
+    return new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: [{
+                label: label,
+                data: [],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
 
-let graficaHum = new Chart(document.getElementById("graf_hum"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Humedad (%)",
-            data: [],
-            borderColor: "rgba(0, 150, 150, 1)",
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
+let graficaTemp = crearGrafica(document.getElementById("graf_temp"), "Temperatura (°C)");
+let graficaHum = crearGrafica(document.getElementById("graf_hum"), "Humedad (%)");
+let graficaPeso = crearGrafica(document.getElementById("graf_peso"), "Peso (g)");
+let graficaMetano = crearGrafica(document.getElementById("graf_metano"), "Metano (ppm)");
 
-let graficaPeso = new Chart(document.getElementById("graf_peso"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Peso (g)",
-            data: [],
-            borderColor: "rgba(200, 100, 50, 1)",
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-let graficaMetano = new Chart(document.getElementById("graf_metano"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Metano (ppm)",
-            data: [],
-            borderColor: "rgba(150, 0, 150, 1)",
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-// --- ACTUALIZAR GRÁFICAS ---
 function actualizarGraficas() {
-    const t = new Date().toLocaleTimeString().slice(0, 5);
+    const hora = new Date().toLocaleTimeString().slice(0, 5);
 
-    function pushData(chart, value) {
-        chart.data.labels.push(t);
-        chart.data.datasets[0].data.push(value);
-
+    function push(chart, valor) {
+        chart.data.labels.push(hora);
+        chart.data.datasets[0].data.push(valor);
         if (chart.data.labels.length > maxPuntos) {
             chart.data.labels.shift();
             chart.data.datasets[0].data.shift();
         }
-
         chart.update();
     }
 
-    pushData(graficaTemp, tempActual);
-    pushData(graficaHum, humActual);
-    pushData(graficaPeso, pesoActual);
-    pushData(graficaMetano, metanoActual);
+    push(graficaTemp, tempActual);
+    push(graficaHum, humActual);
+    push(graficaPeso, pesoActual);
+    push(graficaMetano, metanoActual);
 }
 
-// --- LOOP CADA 3 SEGUNDOS ---
-setInterval(() => {
-    obtenerDatosReales();   // hace predicción
-    actualizarGraficas();   // refresca las gráficas
-}, 3000);
+// ------------------------------
+// 5. Ciclo principal
+// ------------------------------
+async function actualizar() {
+    const sensores = await obtenerSensores();
+    if (!sensores) return;
 
-// Inicializar tarjetas
-actualizarCards();
+    tempActual = sensores.temperatura ?? 0;
+    humActual = sensores.humedad ?? 0;
+    metanoActual = sensores.metano ?? 0;
+    pesoActual = sensores.peso ?? 0;
+    distActual = sensores.movimiento ?? 0;
+
+    await obtenerPrediccion();
+
+    actualizarCards();
+    actualizarGraficas();
+}
+
+// Primera carga
+actualizar();
+
+// Cada 20s
+setInterval(actualizar, INTERVALO_MS);
