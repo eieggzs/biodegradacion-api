@@ -42,6 +42,8 @@ def predict(data: InputData):
     ]]
 
     pred = model.predict(entrada)[0]
+    pred = max(0, min(pred, 100))
+
 
     return {"nivel_degradacion": float(pred)}
 
@@ -68,6 +70,10 @@ def get_adafruit_data():
     humedad = leer_feed("humedad")
     metano = leer_feed("metano")
     peso = leer_feed("peso")
+    if peso is None:
+        peso = 0
+    elif peso < 0:
+        peso = 0
     movimiento = leer_feed("movimiento")
 
     return {
