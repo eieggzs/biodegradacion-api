@@ -20,11 +20,11 @@ def home():
 model = joblib.load("modelo_biodegradacion.pkl")
 
 class InputData(BaseModel):
-    Temperatura: float = Field(alias="temperatura")
-    Humedad: float = Field(alias="humedad")
-    Metano: float = Field(alias="metano")
-    Peso: float = Field(alias="peso")
-    Distancia: float = Field(alias="distancia")
+    temperatura: float = Field(alias="Temperatura")
+    humedad: float = Field(alias="Humedad")
+    metano: float = Field(alias="Metano")
+    peso: float = Field(alias="Peso")
+    movimiento: float = Field(alias="Distancia")
 
     class Config:
         populate_by_name = True
