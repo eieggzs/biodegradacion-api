@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import joblib
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -20,15 +20,15 @@ def home():
 model = joblib.load("modelo_biodegradacion.pkl")
 
 class InputData(BaseModel):
-    Temperatura: float
-    Humedad: float
-    Metano: float
-    Peso: float
-    Distancia: float
+    Temperatura: float = Field(alias="temperatura")
+    Humedad: float = Field(alias="humedad")
+    Metano: float = Field(alias="metano")
+    Peso: float = Field(alias="peso")
+    Distancia: float = Field(alias="distancia")
 
     class Config:
-        alias_generator = str.lower   # convierte Temperatura → temperatura
-        allow_population_by_field_name = True
+        populate_by_name = True
+
 
 @app.post("/predict")
 def predict(data: InputData):
