@@ -34,11 +34,11 @@ async function obtenerPrediccion() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                temperatura: tempActual,
-                humedad: humActual,
-                metano: metanoActual,
-                peso: pesoActual,
-                movimiento: distActual
+                Temperatura: tempActual,
+                Humedad: humActual,
+                Metano: metanoActual,
+                Peso: pesoActual,
+                Movimiento: distActual
             })
         });
 
