@@ -24,12 +24,12 @@ async function obtenerDatosReales() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                temperatura: tempActual,
-                humedad: humActual,
-                metano: metanoActual,
-                peso: pesoActual,
-                movimiento: distActual,
-                tiempo_horas: obtenerHoras()
+                Temperatura: tempActual,
+                Humedad: humActual,
+                Metano: metanoActual,
+                Peso: pesoActual,
+                Movimiento: distActual,
+                Tiempo_horas: obtenerHoras()
             })
         });
 
@@ -41,4 +41,15 @@ async function obtenerDatosReales() {
     } catch (e) {
         console.error("Error al obtener datos reales:", e);
     }
+}
+
+function actualizarCards() {
+    document.getElementById("temp_val").textContent = tempActual.toFixed(2) + " °C";
+    document.getElementById("hum_val").textContent = humActual.toFixed(1) + " %";
+    document.getElementById("metano_val").textContent = metanoActual.toFixed(1) + " ppm";
+    document.getElementById("peso_val").textContent = pesoActual.toFixed(1) + " g";
+    document.getElementById("dist_val").textContent = distActual ? "Detectado" : "No detectado";
+
+    document.getElementById("degradacion_val").textContent =
+        degradacionActual.toFixed(2) + " %";
 }
