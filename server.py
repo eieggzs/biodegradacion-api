@@ -7,32 +7,36 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-# Servir carpeta ADD
+# Servir carpeta ADD (frontend)
 app.mount("/ADD", StaticFiles(directory="ADD"), name="ADD")
 
-# Servir index.html cuando se visite "/"
 @app.get("/")
 def home():
     return FileResponse("ADD/index.html")
 
+# Cargar modelo
 model = joblib.load("modelo_biodegradacion.pkl")
 
+# Input correcto (coincide con dataset_final y tu modelo ML)
 class InputData(BaseModel):
-    Temperatura: float
-    Humedad: float
-    Metano: float
-    Peso: float
-    Distancia: float
+    temperatura: float
+    humedad: float
+    metano: float
+    peso: float
+    movimiento: float
+    tiempo_horas: float   # IMPORTANTE para la degradación
 
 @app.post("/predict")
 def predict(data: InputData):
+
     entrada = [[
-        data.Temperatura,
-        data.Humedad,
-        data.Metano,
-        data.Peso,
-        data.Distancia
+        data.temperatura,
+        data.humedad,
+        data.metano,
+        data.peso,
+        data.movimiento,
+        data.tiempo_horas
     ]]
+
     pred = model.predict(entrada)[0]
     return {"nivel_degradacion": float(pred)}
-
